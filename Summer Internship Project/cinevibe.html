@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>CineVibe</title>
+<style>
+  /* Reset and base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body, html {
+    height: 100%;
+    background: #0f0f1f;
+    color: #eee;
+    overflow: hidden;
+  }
+
+  /* Running animated background on login page */
+  #login-page {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(270deg, #120024, #1f005c, #2c0069, #120024);
+    background-size: 800% 800%;
+    animation: GradientShift 20s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+  }
+  @keyframes GradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Container for form with vibe line motion */
+  .form-container {
+    background: rgba(20,18,47,0.85);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 360px;
+    padding: 30px 30px 40px;
+    box-shadow: 0 0 40px #a86eff88;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-container::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -60%;
+    width: 220%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #a86eff, transparent);
+    animation: vibeLine 3s linear infinite;
+    border-radius: 2px;
+  }
+  @keyframes vibeLine {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(55%); }
+  }
+
+  /* Title */
+  .form-title {
+    text-align: center;
+    font-size: 2.4rem;
+    color: #ccadff;
+    font-weight: 900;
+    margin-bottom: 28px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #a86eff90;
+  }
+  .cinevibe-logo {
+    font-family: 'Arial Black', Gadget, sans-serif;
+    color: #ccadff;
+    text-align: center;
+    font-weight: 900;
+    font-size: 3rem;
+    margin-bottom: 8px;
+    user-select: none;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px #a86effcc;
+  }
+
+  /* Tabs for Sign In / Sign Up */
+  .tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .tab-button {
+    flex: 1;
+    padding: 14px 0;
+    background: transparent;
+    border: none;
+    color: #d3c9fa;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.4s ease, border-bottom 0.4s ease;
+    border-bottom: 3px solid transparent;
+    user-select: none;
+  }
+  .tab-button.active {
+    color: #f0e1ff;
+    border-bottom: 3px solid #ccadff;
+  }
+  .tab-button:hover:not(.active) {
+    color: #d3baff;
+  }
+
+  form {
+    display: none;
+    flex-direction: column;
+  }
+  form.active {
+    display: flex;
+  }
+
+  /* Input styles */
+  label {
+    color: #ccaaffcc;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    background-color: #2a1e52;
+    border: 1.5px solid #5e4683;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    font-size: 1.1rem;
+    color: #fffaf9;
+    font-weight: 600;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 0 5px #4d31bf88;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-color: #ccadff;
+    box-shadow: 0 0 15px #ccadffaa;
+    background-color: #3a2a87;
+  }
+  
+  /* Buttons */
+  button[type="submit"] {
+    background: #ccadff;
+    color: #2a1e44;
+    border: none;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 20px #ccadffcc;
+    user-select: none;
+  }
+  button[type="submit"]:hover {
+    background: #ddbbff;
+    box-shadow: 0 0 28px #e9ccffcc;
+  }
+
+  /* Error message */
+  .error-msg {
+    color: #ff7070;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    min-height: 20px;
+    font-weight: 700;
+    text-shadow: 0 0 3px #ff9494cc;
+  }
+
+  /* Link to switch forms */
+  .toggle-form-text {
+    font-size: 1rem;
+    color: #a98fcd;
+    text-align: center;
+    margin-top: 14px;
+    user-select: none;
+  }
+  .toggle-form-text span {
+    color: #ccadff;
+    cursor: pointer;
+    font-weight: 900;
+    text-shadow: 0 0 6px #ccaaffaa;
+  }
+  .toggle-form-text span:hover {
+    color: #e3d5ff;
+  }
+
+  /* Home Page styles */
+  #home-page {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #1a0739, #4b1f96, #762aff);
+    background-size: 400% 400%;
+    animation: GradientShift 30s ease infinite;
+    color: #eee;
+    padding: 12px 20px 20px;
+    overflow-y: auto;
+  }
+  #home-page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid #5e3db7aa;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+   #home-page .logo {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 2.8rem;
+  letter-spacing: 4px;
+  user-select: none;
+  position: relative;
+  display: inline-block;
+  color: red; /* Default to avoid flicker */
+  animation: pulseGlow 2.5s ease-in-out infinite, colorCycle 10s linear infinite, fadeCycle 4s ease-in-out infinite;
+  text-shadow: 0 0 10px currentColor;
+  overflow: hidden;
+  text-align: left; /* Align text left */
+  margin-left: 20px; /* Optional spacing from edge */
+}
+
+/* PULSE GLOW */
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 8px currentColor;
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 20px currentColor;
+    transform: scale(1.03);
+  }
+  100% {
+    text-shadow: 0 0 8px currentColor;
+    transform: scale(1);
+  }
+}
+
+/* EXTENDED COLOR CYCLE */
+@keyframes colorCycle {
+  0%   { color: red; }
+  20%  { color: #007bff; }       /* Blue */
+  40%  { color: green; }
+  60%  { color: #b8860b; }       /* Dark Goldenrod */
+  80%  { color: purple; }
+  100% { color: red; }
+}
+
+/* FADE IN & OUT */
+@keyframes fadeCycle {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* GLASS SHINE EFFECT */
+#home-page .logo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-20deg);
+  animation: shine 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  100% {
+    left: 125%;
+  }
+}
+
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  #home-page nav button {
+    font-weight: 900;
+    background: #dccaffdd;
+    border: none;
+    color: #2a1e44;
+    padding: 10px 20px;
+    border-radius: 18px;
+    cursor: pointer;
+    box-shadow: 0 0 28px #e0cbffff;
+    transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+  #home-page nav button:hover {
+    background: #ead7ff;
+    transform: scale(1.05);
+    box-shadow: 0 0 40px #ead7fff0;
+  }
+  #userName {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #f0e1ff;
+    user-select: none;
+  }
+
+  /* Categories navbar */
+  #categoryNav {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  #categoryNav button {
+    padding: 8px 16px;
+    background: #532b8e;
+    border: none;
+    border-radius: 20px;
+    color: #ddd;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    user-select: none;
+  }
+  #categoryNav button.active,
+  #categoryNav button:hover {
+    background: #ccadff;
+    color: #2a1e44;
+  }
+
+  /* Search Bar */
+  #searchBar {
+    flex: 1 1 280px;
+    max-width: 360px;
+    padding: 10px 16px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    border: 2px solid #bda3ff;
+    background-color: #3b298c;
+    color: #eee;
+    text-shadow: 0 0 5px #9877ff;
+    box-shadow: inset 0 0 15px #7263ccaa;
+    transition: border-color 0.3s ease, box-shadow 0.4s ease;
+    user-select: none;
+  }
+  #searchBar::placeholder {
+    color: #bda3ffcc;
+  }
+  #searchBar:focus {
+    outline: none;
+    border-color: #e2d4ff;
+    background-color: #4939a9;
+    box-shadow: inset 0 0 20px #a589f0dd, 0 0 15px #c2b5ffcc;
+  }
+
+  /* Movie grids */
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+    gap: 18px 18px;
+    margin-bottom: 30px;
+  }
+  .movie-card {
+    background: #3a2b85;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 0 10px #7f56ffaa,
+      inset 0 0 40px #a86eff44;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+  .movie-card:hover,
+  .movie-card:focus {
+    transform: scale(1.12);
+    box-shadow:
+      0 0 30px #ccadffdd,
+      inset 0 0 90px #ccadffaa;
+    outline: none;
+  }
+  .movie-card img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 2 / 3;
+    flex-shrink: 0;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8));
+    transition: filter 0.3s ease;
+  }
+  .movie-card:hover img,
+  .movie-card:focus img {
+    filter: drop-shadow(0 6px 15px #ccaaffbb);
+  }
+  .movie-title {
+    padding: 10px 14px;
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: #e3dbff;
+    text-align: center;
+    user-select: none;
+    flex-grow: 1;
+    text-shadow: 0 0 8px #ccaaffcc;
+  }
+
+  /* Scrollbar for home page */
+  #home-page::-webkit-scrollbar {
+    width: 12px;
+  }
+  #home-page::-webkit-scrollbar-track {
+    background: #2a1f5a;
+    border-radius: 10px;
+  }
+  #home-page::-webkit-scrollbar-thumb {
+    background: #a86effcc;
+    border-radius: 10px;
+  }
+
+  /* Continue watching container */
+  #continue-watching {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+  #continue-watching .movie-card {
+    min-width: 140px;
+  }
+
+  /* Video Modal styles */
+  #videoModal {
+    display: none;
+    position: fixed;
+    z-index: 1500;
+    inset: 0;
+    background: rgba(20, 16, 53, 0.95);
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+  }
+  #videoModal.active {
+    display: flex;
+  }
+  #videoModal video,
+  #videoModal iframe {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 20px;
+    box-shadow: 0 0 40px #ccadffcc;
+  }
+  #modalCloseBtn {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #ccadff;
+    font-size: 3rem;
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+    z-index: 1600;
+    transition: color 0.3s ease;
+    outline-offset: 4px;
+  }
+  #modalCloseBtn:hover,
+  #modalCloseBtn:focus {
+    color: #e3dbff;
+    outline: none;
+  }
+
+  /* Responsive and mobile friendly */
+  @media screen and (max-width: 480px) {
+    .form-container {
+      max-width: 100%;
+      padding: 25px 20px 30px;
+    }
+    .movies-grid {
+      grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+      gap: 14px;
+    }
+    #continue-watching {
+      gap: 12px;
+    }
+    .movie-title {
+      font-size: 0.95rem;
+    }
+    #home-page header {
+      justify-content: center;
+      gap: 15px;
+    }
+    nav {
+      width: 100%;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    #searchBar {
+      max-width: 100%;
+      flex-grow: 1;
+      font-size: 1rem;
+      padding: 10px 14px;
+    }
+    #categoryNav {
+      overflow-x: auto;
+      gap: 8px;
+    }
+    #categoryNav button {
+      font-size: 0.9rem;
+      padding: 6px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Page -->
+<section id="login-page" role="main" aria-label="Login and registration page">
+  <div class="form-container" aria-live="polite">
+    <div class="cinevibe-logo" aria-label="CineVibe Logo">CINEVIBE</div>
+    <div class="form-title" id="tab-title">Sign In</div>
+    <div class="tab-buttons" role="tablist" aria-label="Authentication tabs">
+      <button class="tab-button active" id="signInTab" role="tab" aria-selected="true" aria-controls="signInForm" tabindex="0">Sign In</button>
+      <button class="tab-button" id="signUpTab" role="tab" aria-selected="false" aria-controls="signUpForm" tabindex="-1">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="signInForm" class="active" aria-labelledby="signInTab" autocomplete="off" novalidate>
+      <label for="signInEmail">Email</label>
+      <input type="email" id="signInEmail" name="signInEmail" required autocomplete="username" placeholder="example@domain.com" aria-required="true" />
+      <label for="signInPassword">Password</label>
+      <input type="password" id="signInPassword" name="signInPassword" required autocomplete="current-password" placeholder="Your password" aria-required="true" />
+      <div class="error-msg" id="signInError" aria-live="assertive" role="alert"></div>
+      <button type="submit">Sign In</button>
+      <div class="toggle-form-text">Don't have an account? <span id="gotoSignUp" role="button" tabindex="0">Sign Up</span></div>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signUpForm" aria-labelledby="signUpTab" autocomplete="off" novalidate>
+      <label for="signUpName">Full Name</label>
+      <input type="text" id="signUpName" name="signUpName" required placeholder="Your Name" autocomplete="name" aria-required="true" />
+      <label for="signUpEmail">Email</label>
+      <input type="email" id="signUpEmail" name="signUpEmail" required placeholder="example@domain.com" autocomplete="email" aria-required="true" />
+      <label for="signUpPassword">Password</label>
+      <input type="password" id="signUpPassword" name="signUpPassword" required placeholder="Create a password" autocomplete="new-password" aria-required="true" />
+      <div class="error-msg" id="signUpError" aria-live="assertive" role="alert"></div>
+      <button type="submit">Sign Up</button>
+      <div class="toggle-form-text">Already have an account? <span id="gotoSignIn" role="button" tabindex="0">Sign In</span></div>
+    </form>
+  </div>
+</section>
+
+<!-- Home Page -->
+<section id="home-page" aria-label="Homepage" tabindex="0">
+  <header>
+    <div class="logo" aria-label="CineVibe home logo">CINEVIBE</div>
+    <input type="search" id="searchBar" placeholder="Search movies..." aria-label="Search movies" />
+    <nav>
+      <span id="userName" aria-label="Logged in as"></span>
+      <button id="logoutBtn" aria-label="Logout from CineVibe">Logout</button>
+    </nav>
+  </header>
+  <!-- Category Navigation -->
+  <nav id="categoryNav" aria-label="Movie categories navigation">
+    <!-- Category buttons dynamically inserted -->
+  </nav>
+  <main>
+    <section aria-label="Continue watching section">
+      <h2>Continue Watching</h2>
+      <div id="continue-watching" aria-live="polite" aria-label="Continue watching movies">
+        <!-- Continue watching movies will be inserted by JS -->
+      </div>
+    </section>
+    <section id="movies-sections-container" aria-live="polite">
+      <!-- Movie category sections dynamically inserted -->
+    </section>
+  </main>
+</section>
+
+<!-- Video Modal -->
+<div id="videoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+  <button id="modalCloseBtn" aria-label="Close video player">&times;</button>
+  <!-- The iframe or video element will be injected dynamically -->
+</div>
+
+<script>
+  (() => {
+    // Elements
+    const signInTab = document.getElementById('signInTab');
+    const signUpTab = document.getElementById('signUpTab');
+    const signInForm = document.getElementById('signInForm');
+    const signUpForm = document.getElementById('signUpForm');
+    const tabTitle = document.getElementById('tab-title');
+
+    const gotoSignUp = document.getElementById('gotoSignUp');
+    const gotoSignIn = document.getElementById('gotoSignIn');
+
+    const signInError = document.getElementById('signInError');
+    const signUpError = document.getElementById('signUpError');
+
+    const loginPage = document.getElementById('login-page');
+    const homePage = document.getElementById('home-page');
+    const moviesSectionsContainer = document.getElementById('movies-sections-container');
+    const continueWatchingContainer = document.getElementById('continue-watching');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userNameSpan = document.getElementById('userName');
+
+    const searchBar = document.getElementById('searchBar');
+    const categoryNav = document.getElementById('categoryNav');
+
+    const videoModal = document.getElementById('videoModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+    // Toggle tab function
+    function activateTab(tab) {
+      if(tab === 'signin') {
+        signInTab.classList.add('active');
+        signUpTab.classList.remove('active');
+        signInTab.setAttribute('aria-selected', 'true');
+        signUpTab.setAttribute('aria-selected', 'false');
+        signInTab.tabIndex = 0;
+        signUpTab.tabIndex = -1;
+
+        signInForm.classList.add('active');
+        signUpForm.classList.remove('active');
+        tabTitle.textContent = 'Sign In';
+        clearErrors();
+      } else {
+        signUpTab.classList.add('active');
+        signInTab.classList.remove('active');
+        signUpTab.setAttribute('aria-selected', 'true');
+        signInTab.setAttribute('aria-selected', 'false');
+        signUpTab.tabIndex = 0;
+        signInTab.tabIndex = -1;
+
+        signUpForm.classList.add('active');
+        signInForm.classList.remove('active');
+        tabTitle.textContent = 'Sign Up';
+        clearErrors();
+      }
+    }
+
+    // Clear error messages
+    function clearErrors() {
+      signInError.textContent = '';
+      signUpError.textContent = '';
+    }
+
+    // Validation helpers
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+      return re.test(email);
+    }
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+    function validateName(name) {
+      return name.trim().length > 0;
+    }
+
+    // User storage (simulate backend)
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('cinevibeUsers') || '[]');
+    }
+    function saveUsers(users) {
+      localStorage.setItem('cinevibeUsers', JSON.stringify(users));
+    }
+
+    // Current user session
+    function setCurrentUser(user) {
+      localStorage.setItem('cinevibeCurrentUser', JSON.stringify(user));
+    }
+    function getCurrentUser() {
+      return JSON.parse(localStorage.getItem('cinevibeCurrentUser'));
+    }
+    function removeCurrentUser() {
+      localStorage.removeItem('cinevibeCurrentUser');
+    }
+
+    // Continue watching storage keys
+    const CONTINUE_WATCHING_KEY = 'cinevibeContinueWatching';
+
+    // Get continue watching list for current user
+    function getContinueWatching() {
+      let currentUser = getCurrentUser();
+      if(!currentUser) return [];
+      let allContinue = JSON.parse(localStorage.getItem(CONTINUE_WATCHING_KEY) || '{}');
+      return allContinue[currentUser.email] || [];
+    }
+
+    // Save continue watching for current user
+    function saveContinueWatching(list) {
+      let currentUser = getCurrentUser();
+      if(!currentUser) return;
+      let allContinue = JSON.parse(localStorage.getItem(CONTINUE_WATCHING_KEY) || '{}');
+      allContinue[currentUser.email] = list;
+      localStorage.setItem(CONTINUE_WATCHING_KEY, JSON.stringify(allContinue));
+    }
+
+    // Add or update continue watching item
+    function addContinueWatching(movie) {
+      let list = getContinueWatching();
+      // Remove any previous entry with same title
+      list = list.filter(m => m.title !== movie.title);
+      list.unshift(movie); // add to front
+      // Limit max 10 items
+      if(list.length > 10) list.pop();
+      saveContinueWatching(list);
+    }
+
+    // Sign Up logic
+    signUpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const name = signUpForm.signUpName.value.trim();
+      const email = signUpForm.signUpEmail.value.trim().toLowerCase();
+      const password = signUpForm.signUpPassword.value;
+
+      if(!validateName(name)) {
+        signUpError.textContent = 'Please provide a valid name.';
+        return;
+      }
+      if(!validateEmail(email)) {
+        signUpError.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if(!validatePassword(password)) {
+        signUpError.textContent = 'Password should be at least 6 characters.';
+        return;
+      }
+
+      let users = getUsers();
+      const exists = users.find(u => u.email === email);
+      if(exists) {
+        signUpError.textContent = 'Email already registered. Please sign in.';
+        return;
+      }
+
+      const newUser = { name, email, password };
+      users.push(newUser);
+      saveUsers(users);
+      setCurrentUser({ name, email });
+      showHomePage();
+    });
+
+    // Sign In logic
+    signInForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const email = signInForm.signInEmail.value.trim().toLowerCase();
+      const password = signInForm.signInPassword.value;
+
+      if(!validateEmail(email)) {
+        signInError.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if(!validatePassword(password)) {
+        signInError.textContent = 'Password should be at least 6 characters.';
+        return;
+      }
+
+      let users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+      if(!user) {
+        signInError.textContent = 'Incorrect email or password.';
+        return;
+      }
+
+      setCurrentUser({ name: user.name, email: user.email });
+      showHomePage();
+    });
+
+    // Switch tabs by clicking buttons or "toggle-form-text"
+    signInTab.addEventListener('click', () => activateTab('signin'));
+    signUpTab.addEventListener('click', () => activateTab('signup'));
+    gotoSignUp.addEventListener('click', () => activateTab('signup'));
+    gotoSignIn.addEventListener('click', () => activateTab('signin'));
+
+    // Keyboard accessible toggles for spans
+    gotoSignUp.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab('signup'); } });
+    gotoSignIn.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab('signin'); } });
+
+    // Logout button
+    logoutBtn.addEventListener('click', () => {
+      removeCurrentUser();
+      showLoginPage();
+    });
+
+    // Movie data with categories
+    const movies = [
+      { title: "Avengers: Endgame", img: "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg", videoType: "youtube", videoId: "TcMBFSGVi1c", category: "Action" },
+      { title: "Thor: Ragnarok", img: "https://upload.wikimedia.org/wikipedia/en/7/7d/Thor_Ragnarok_poster.jpg", videoType: "youtube", videoId: "ue80QwXMRHg", category: "Action" },
+  { "title": "Insidious", "img": "https://upload.wikimedia.org/wikipedia/en/2/2d/Insidious_poster.jpg", "videoType": "youtube", "videoId": "zuZnRUcoWos", "category": "Horror" },
+  { "title": "The Notebook", "img": "https://upload.wikimedia.org/wikipedia/en/8/86/Posternotebook.jpg", "videoType": "youtube", "videoId": "FC6biTjEyZw", "category": "Romance" },
+  { "title": "La La Land", "img": "https://upload.wikimedia.org/wikipedia/en/a/ab/La_La_Land_%28film%29.png", "videoType": "youtube", "videoId": "0pdqf4P9MB8", "category": "Romance" },
+  { "title": "Gone Girl", "img": "https://upload.wikimedia.org/wikipedia/en/0/05/Gone_Girl_Poster.jpg", "videoType": "youtube", "videoId": "esGn-xKFZdU", "category": "Thriller" },
+  { "title": "Shutter Island", "img": "https://upload.wikimedia.org/wikipedia/en/7/76/Shutterislandposter.jpg", "videoType": "youtube", "videoId": "5iaYLCiq5RM", "category": "Thriller" },
+  { "title": "Superbad", "img": "https://upload.wikimedia.org/wikipedia/en/8/8b/Superbad_Poster.png", "videoType": "youtube", "videoId": "4eaZ_48ZYog", "category": "Comedy" },
+  { "title": "Frozen", "img": "https://upload.wikimedia.org/wikipedia/en/0/05/Frozen_%282013_film%29_poster.jpg", "videoType": "youtube", "videoId": "TbQm5doF_Uc", "category": "Animation" },
+  { "title": "Toy Story", "img": "https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg", "videoType": "youtube", "videoId": "KYz2wyBy3kc", "category": "Animation" },
+        { "title": "John Wick: Chapter 4", "img": "https://www.impawards.com/2023/posters/john_wick_chapter_four.jpg", "videoType": "youtube", "videoId": "qEVUtrk8_B4", "category": "Action" },
+  { "title": "The Flash", "img": "https://www.impawards.com/2023/posters/flash.jpg", "videoType": "youtube", "videoId": "hebWYacbdvc", "category": "Action" },
+  { "title": "Indiana Jones and the Dial of Destiny", "img": "https://www.impawards.com/2023/posters/indiana_jones_and_the_dial_of_destiny.jpg", "videoType": "youtube", "videoId": "eQfMbSe7F2g", "category": "Adventure" },
+  { "title": "Guardians of the Galaxy Vol. 3", "img": "https://www.impawards.com/2023/posters/guardians_of_the_galaxy_vol_three.jpg", "videoType": "youtube", "videoId": "u3V5KDHRQvk", "category": "Action" },
+  { "title": "Transformers: Rise of the Beasts", "img": "https://www.impawards.com/2023/posters/transformers_rise_of_the_beasts.jpg", "videoType": "youtube", "videoId": "itnqEauWQZM", "category": "Action" },
+  { "title": "The Hunger Games: The Ballad of Songbirds & Snakes", "img": "https://www.impawards.com/2023/posters/hunger_games_the_ballad_of_songbirds_and_snakes.jpg", "videoType": "youtube", "videoId": "RDE6Uz73A7g", "category": "Sci-Fi" },
+  { "title": "Aquaman and the Lost Kingdom", "img": "https://www.impawards.com/2023/posters/aquaman_and_the_lost_kingdom.jpg", "videoType": "youtube", "videoId": "UGc5Tzz19UY", "category": "Action" },
+  { "title": "The Little Mermaid", "img": "https://www.impawards.com/2023/posters/little_mermaid.jpg", "videoType": "youtube", "videoId": "kpGo2_d3oYE", "category": "Fantasy" },
+   {"title": "The Phoenician Scheme","img": "https://www.impawards.com/2025/posters/phoenician_scheme.jpg","videoType": "youtube","videoId": "klm012mno","category": "Comedy" },
+  {"title": "The Grand Budapest Hotel","img": "https://www.impawards.com/2014/posters/grand_budapest_hotel_ver3.jpg","videoType": "youtube","videoId": "1Fg5iWmQjwk","category": "Comedy" },
+  { "title": "Jojo Rabbit","img": "https://www.impawards.com/2019/posters/jojo_rabbit_ver2.jpg","videoType": "youtube","videoId": "tL4McUzXfFI","category": "Comedy" },
+    { "title": "Once Upon a Time in Hollywood","img": "https://www.impawards.com/2019/posters/once_upon_a_time_in_hollywood_ver4.jpg","videoType": "youtube","videoId": "ELeMaP8EPAA","category": "Comedy" },
+  { "title": "The Princess Bride", "img": "https://www.impawards.com/1987/posters/princess_bride_ver2.jpg", "videoType": "youtube", "videoId": "VYgcrnyE5vU", "category": "Romance" },
+   { "title": "The Nun", "img": "https://www.impawards.com/2018/posters/nun_ver2.jpg", "videoType": "youtube", "videoId": "pzD9zGcUNrw", "category": "Horror" },
+  { "title": "Avatar", "img": "https://www.impawards.com/2009/posters/avatar_ver4.jpg", "videoType": "youtube", "videoId": "5PSNL1qE6VY", "category": "Fantasy" },
+  { "title": "Bullet Train", "img": "https://www.impawards.com/2022/posters/bullet_train_ver3.jpg", "videoType": "youtube", "videoId": "0IOsk2Vlc4o", "category": "Action" },
+   { "title": "Argylle", "img": "https://www.impawards.com/2024/posters/argylle_ver3.jpg", "videoType": "youtube", "videoId": "TAA_ycx1G0Q", "category": "Action" },
+  { "title": "Black Adam", "img": "https://www.impawards.com/2022/posters/black_adam_ver3.jpg", "videoType": "youtube", "videoId": "X0tOpBuYasI", "category": "Action" },
+  { "title": "Top Gun: Maverick", "img": "https://www.impawards.com/2022/posters/top_gun_maverick_ver4.jpg", "videoType": "youtube", "videoId": "giXco2jaZ_4", "category": "Action" },
+  { "title": "The Dark Knight", "img": "https://www.impawards.com/2008/posters/dark_knight_ver4.jpg", "videoType": "youtube", "videoId": "EXeTwQWrcwY", "category": "Action" },
+  { "title": "Game Night", "img": "https://www.impawards.com/2018/posters/game_night_ver2.jpg", "videoType": "youtube", "videoId": "qTx-sdR6Yzk", "category": "Comedy" },
+  { "title": "Hereditary", "img": "https://www.impawards.com/2018/posters/hereditary_ver2.jpg", "videoType": "youtube", "videoId": "V6wWKNij_1M", "category": "Horror" },
+  { "title": "Soul", "img": "https://www.impawards.com/2020/posters/soul_ver4.jpg", "videoType": "youtube", "videoId": "xOsLIiBStEs", "category": "Animation" },
+  { "title": "Turning Red", "img": "https://www.impawards.com/2022/posters/turning_red_ver3.jpg", "videoType": "youtube", "videoId": "XdKzUbAiswE", "category": "Animation" },
+  { "title": "The Whale", "img": "https://www.impawards.com/2022/posters/whale.jpg", "videoType": "youtube", "videoId": "nWiQodhMvz4", "category": "Drama" },
+  { "title": "Marriage Story", "img": "https://www.impawards.com/2019/posters/marriage_story_ver3.jpg", "videoType": "youtube", "videoId": "BHi-a1n8t7M", "category": "Drama" },
+  { "title": "Edge of Tomorrow", "img": "https://upload.wikimedia.org/wikipedia/en/f/f9/Edge_of_Tomorrow_Poster.jpg", "videoType": "youtube", "videoId": "yUmSVcttXnI", "category": "Sci-Fi" },
+  { "title": "Gravity", "img": "https://upload.wikimedia.org/wikipedia/en/f/f6/Gravity_Poster.jpg", "videoType": "youtube", "videoId": "OiTiKOy59o4", "category": "Sci-Fi" },
+  { "title": "Wonka", "img": "https://www.impawards.com/2023/posters/wonka.jpg", "videoType": "youtube", "videoId": "otNh9bTjXWg", "category": "Comedy" },
+  { "title": "Blade Runner 2049","img": "https://www.impawards.com/2017/posters/blade_runner_twenty_forty_nine_ver4.jpg","videoType": "youtube","videoId": "gCcx85zbxz4","category": "Adventure" },
+  { "title": "Life of Pi","img": "https://www.impawards.com/2012/posters/life_of_pi_ver2.jpg","videoType": "youtube","videoId": "j9Hjrs6WQ8M","category": "Adventure" },
+  { "title": "The Shape of Water","img": "https://www.impawards.com/2017/posters/shape_of_water_ver2.jpg","videoType": "youtube","videoId": "XFYWazblaUA","category": "Adventure" },
+  { "title": "1917","img": "https://www.impawards.com/2019/posters/nineteen_seventeen_ver2.jpg","videoType": "youtube","videoId": "YqNYrYUiMfg","category": "Adventure" },
+  { "title": "Snow White","img": "https://www.impawards.com/2025/posters/snow_white.jpg","videoType": "youtube","videoId": "ghi901jkl","category": "Adventure" },
+  { "title": "The Exorcist: Believer","img": "https://www.impawards.com/2023/posters/exorcist_believer.jpg","videoType": "youtube","videoId": "OSUxrSe5GbI","category": "Thriller" },
+  { "title": "Clown in a Cornfield","img": "https://www.impawards.com/2025/posters/clown_in_a_cornfield.jpg","videoType": "youtube","videoId": "nop678pqr","category": "Thriller" },
+   {"title": "Logan","img": "https://upload.wikimedia.org/wikipedia/en/3/37/Logan_2017_poster.jpg","videoType": "youtube","videoId": "Div0iP65aZo","category": "Horror" },
+ {"title": "The Equalizer 3","img": "https://www.impawards.com/2023/posters/equalizer_three.jpg","videoType": "youtube","videoId": "19ikl8vy4zs","category": "Horror" },  
+ { title: "The Lion King", img: "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg", videoType: "youtube", videoId: "4sj1MT05lAA",category: "Animation" },
+  {"title": "The Little Mermaid","img": "https://www.impawards.com/2023/posters/little_mermaid.jpg","videoType": "youtube","videoId": "kpGo2_d3oYE",category: "Animation" },
+  {"title": "Wonka","img": "https://www.impawards.com/2023/posters/wonka.jpg","videoType": "youtube","videoId": "otNh9bTjXWg",category: "Animation" },
+  {"title": "Aquaman and the Lost Kingdom","img": "https://www.impawards.com/2023/posters/aquaman_and_the_lost_kingdom.jpg","videoType": "youtube","videoId": "UGc5Tzz19UY","category": "Fantasy" },
+  { title: "Thor: Ragnarok", img: "https://upload.wikimedia.org/wikipedia/en/7/7d/Thor_Ragnarok_poster.jpg", videoType: "youtube", videoId: "ue80QwXMRHg","category": "Fantasy" },
+  { "title": "The Matrix","img": "https://m.media-amazon.com/images/I/51vpnbwFHrL._AC_SY679_.jpg", "videoType": "youtube","videoId": "m8e-FF8MsqU", "category": "Sci-Fi" },
+  { "title": "Barbie","img": "https://www.impawards.com/2023/posters/barbie_ver2.jpg","videoType": "youtube","videoId": "pBk4NYhWNMM","category": "Romance" },
+ { "title": "Shadow Force","img": "https://www.impawards.com/2025/posters/shadow_force.jpg","videoType": "youtube","videoId": "qrs901stu","category": "Thriller" },
+ { "title": "Final Destination: Bloodlines","img": "https://www.impawards.com/2025/posters/final_destination_bloodlines.jpg","videoType": "youtube","videoId": "zab890bcd","category": "Thriller" },
+ { "title": "Gravity","img": "https://www.impawards.com/2013/posters/gravity_ver3.jpg","videoType": "youtube","videoId": "OiTiKOy59o4","category": "Thriller" },
+  {"title": "Kung Fu Panda 4", "img": "https://www.impawards.com/2024/posters/kung_fu_panda_four_ver2.jpg","videoType": "youtube","videoId": "7Y7Z7lZz0g","category": "Fantasy" },
+    { "title": "Lilo & Stitch","img": "https://www.impawards.com/2025/posters/lilo_and_stitch.jpg","videoType": "youtube","videoId": "mno678pqr","category": "Fantasy" },
+  { "title": "Transformers One","img": "https://www.impawards.com/2024/posters/transformers_one_ver2.jpg","videoType": "youtube","videoId": "8Y8Z8lZz0g","category": "Fantasy" },
+  { "title": "Companion","img": "https://www.impawards.com/2025/posters/companion.jpg", "videoType": "youtube", "videoId": "def567ghi","category": "Fantasy" },
+  { "title": "Fast X", "img": "https://www.impawards.com/2023/posters/fast_x.jpg", "videoType": "youtube", "videoId": "eoOaKN4qCKw", "category": "Action" },
+  { "title": "The Exorcist: Believer", "img": "https://www.impawards.com/2023/posters/exorcist_believer.jpg", "videoType": "youtube", "videoId": "OSUxrSe5GbI", "category": "Horror" },
+  { "title": "Napoleon", "img": "https://www.impawards.com/2023/posters/napoleon.jpg", "videoType": "youtube", "videoId": "OAZWXUkrjPc", "category": "Drama" },
+  { "title": "Weapons", "img": "https://www.impawards.com/2025/posters/weapons.jpg", "videoType": "youtube", "videoId": "ghi789rst", "category": "Thriller" },
+  { "title": "Jurassic World: Rebirth", "img": "https://www.impawards.com/2025/posters/jurassic_world_rebirth.jpg", "videoType": "youtube", "videoId": "yz123abc", "category": "Adventure" },
+  { "title": "Materialists", "img": "https://www.impawards.com/2025/posters/materialists.jpg", "videoType": "youtube", "videoId": "bcd456def", "category": "Comedy" },
+      { "title": "The Godfather", "img": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg", "videoType": "youtube", "videoId": "sY1S34973zA", "category": "Drama" },
+      { title: "John Wick", img: "https://upload.wikimedia.org/wikipedia/en/9/98/John_Wick_TeaserPoster.jpg", videoType: "youtube", videoId: "2AUmvWm5ZDQ", category: "Action" },
+      { title: "The Shawshank Redemption", img: "https://upload.wikimedia.org/wikipedia/en/8/81/ShawshankRedemptionMoviePoster.jpg", videoType: "youtube", videoId: "6hB3S9bIaco", category: "Drama" },
+      { title: "Forrest Gump", img: "https://upload.wikimedia.org/wikipedia/en/6/67/Forrest_Gump_poster.jpg", videoType: "youtube", videoId: "bLvqoHBptjg", category: "Drama" },
+      { title: "The Lion King", img: "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg", videoType: "youtube", videoId: "4sj1MT05lAA", category: "Animation" },
+      { title: "Joker", img: "https://upload.wikimedia.org/wikipedia/en/e/e1/Joker_%282019_film%29_poster.jpg", videoType: "youtube", videoId: "zAGVQLHvwOY", category: "Drama" },
+      { "title": "Captain America: The First Avenger", "img": "https://upload.wikimedia.org/wikipedia/en/3/37/Captain_America_The_First_Avenger_poster.jpg", "videoType": "youtube", "videoId": "JerVrbLldXw", "category": "Action" },
+  { "title": "Logan", "img": "https://upload.wikimedia.org/wikipedia/en/3/37/Logan_2017_poster.jpg", "videoType": "youtube", "videoId": "Div0iP65aZo", "category": "Action" },
+  { "title": "Spider-Man: Homecoming", "img": "https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg", "videoType": "youtube", "videoId": "U0D3AOldjMU", "category": "Action" },
+  { "title": "Spider-Man: No Way Home", "img": "https://upload.wikimedia.org/wikipedia/en/0/00/Spider-Man_No_Way_Home_poster.jpg", "videoType": "youtube", "videoId": "JfVOs4VSpmA", "category": "Action" },
+  { "title": "Dune: Part Two", "img": "https://www.impawards.com/2024/posters/dune_part_two_ver25.jpg", "videoType": "youtube", "videoId": "z45Qy_9ZKqs", "category": "Sci-Fi" },
+  { "title": "Oppenheimer", "img": "https://www.impawards.com/2023/posters/oppenheimer.jpg", "videoType": "youtube", "videoId": "uYPbbksJxIg", "category": "Drama" },
+  { "title": "Barbie", "img": "https://www.impawards.com/2023/posters/barbie_ver2.jpg", "videoType": "youtube", "videoId": "pBk4NYhWNMM", "category": "Comedy" },
+  { "title": "Killers of the Flower Moon", "img": "https://www.impawards.com/2023/posters/killers_of_the_flower_moon.jpg", "videoType": "youtube", "videoId": "EP34Yoxs3FQ", "category": "Drama" },
+  { "title": "The Marvels", "img": "https://www.impawards.com/2023/posters/marvels.jpg", "videoType": "youtube", "videoId": "wS_qbDztgVY", "category": "Action" },
+  { "title": "Thelma","img": "https://www.impawards.com/2024/posters/thelma_ver2.jpg","videoType": "youtube","videoId": "3K3NwZKjGvA","category": "Romance"  },
+  {"title": "Borderlands","img": "https://www.impawards.com/2024/posters/borderlands.jpg","videoType": "youtube","videoId": "def123ghi","category": "Sci-Fi" },
+ {"title": "Furiosa: A Mad Max Saga","img": "https://www.impawards.com/2024/posters/furiosa.jpg","videoType": "youtube","videoId": "stu012vwx","category": "Sci-Fi" },
+ {"title": "Transformers One","img": "https://www.impawards.com/2024/posters/transformers_one_ver2.jpg","videoType": "youtube","videoId": "8Y8Z8lZz0g","category": "Sci-Fi" },
+ {"title": "Alien: Romulus","img": "https://www.impawards.com/2024/posters/alien_romulus_ver2.jpg","videoType": "youtube","videoId": "XHk5kCIiGoM","category": "Sci-Fi" },
+  { "title": "The Idea of You","img": "https://www.impawards.com/2024/posters/idea_of_you.jpg","videoType": "youtube", "videoId": "cFqCmIU0-_o","category": "Romance" },
+  { "title": "Se7en", "img": "https://upload.wikimedia.org/wikipedia/en/6/68/Seven_%28movie%29_poster.jpg", "videoType": "youtube", "videoId": "znmZoVkCjpI", "category": "Thriller" },
+  { "title": "Step Brothers", "img": "https://upload.wikimedia.org/wikipedia/en/d/d9/StepbrothersMP08.jpg", "videoType": "youtube", "videoId": "CewglxElBK0", "category": "Comedy" },
+  { "title": "Pan's Labyrinth", "img": "https://upload.wikimedia.org/wikipedia/en/6/67/Pan%27s_Labyrinth.jpg", "videoType": "youtube", "videoId": "EqYiSlkvRuw", "category": "Fantasy" },
+  { "title": "Me Before You", "img": "https://upload.wikimedia.org/wikipedia/en/f/fd/Me_Before_You_%28film%29.jpg", "videoType": "youtube", "videoId": "Eh993__rOxA", "category": "Romance" },
+  { "title": "Inside Out 2", "img": "https://www.impawards.com/2024/posters/inside_out_two.jpg", "videoType": "youtube", "videoId": "LEjhY15eCx0", "category": "Animation" },
+  { "title": "Damsel", "img": "https://www.impawards.com/2024/posters/damsel.jpg", "videoType": "youtube", "videoId": "Rz2SNm8VguE", "category": "Adventure" },
+  { "title": "Kung Fu Panda 4", "img": "https://www.impawards.com/2024/posters/kung_fu_panda_four.jpg", "videoType": "youtube", "videoId": "lKY8pI2Q-fQ", "category": "Animation" },
+  { "title": "Kingdom of the Planet of the Apes", "img": "https://www.impawards.com/2024/posters/kingdom_of_the_planet_of_the_apes.jpg", "videoType": "youtube", "videoId": "pLpmqHBa-jE", "category": "Sci-Fi" },
+   { "title": "Five Nights at Freddy's", "img": "https://www.impawards.com/2023/posters/five_nights_at_freddys.jpg", "videoType": "youtube", "videoId": "0VH9WCFV6XQ", "category": "Horror" } ,
+   { "title": "The Marvels", "img": "https://www.impawards.com/2023/posters/marvels.jpg", "videoType": "youtube", "videoId": "wS_qbDztgVY", "category": "Adventure" },
+  { "title": "Daddio", "img": "https://www.impawards.com/2024/posters/daddio_ver2.jpg", "videoType": "youtube", "videoId": "1Y1Z1lZz0g","category": "Romance" },
+  { "title": "The Idea of You","img": "https://www.impawards.com/2024/posters/idea_of_you.jpg","videoType": "youtube", "videoId": "cFqCmIU0-_o","category": "Romance" },
+  { "title": "Blue Beetle", "img": "https://www.impawards.com/2023/posters/blue_beetle.jpg", "videoType": "youtube", "videoId": "vS3_72Gb-bI", "category": "Adventure" },
+   { "title": "Dungeons & Dragons: Honor Among Thieves", "img": "https://www.impawards.com/2023/posters/dungeons_and_dragons_honor_among_thieves.jpg", "videoType": "youtube", "videoId": "IiMinixSXII", "category": "Fantasy" },
+  { "title": "Haunted Mansion", "img": "https://www.impawards.com/2023/posters/haunted_mansion.jpg", "videoType": "youtube", "videoId": "AjLKTz81bj8", "category": "Horror" },
+   { "title": "Longlegs","img": "https://www.impawards.com/2024/posters/longlegs_ver2.jpg", "videoType": "youtube", "videoId": "9Y9Z9lZz0g" ,"category": "Horror"  },
+  { "title": "MaXXXine", "img": "https://www.impawards.com/2024/posters/maxxxine_ver2.jpg", "videoType": "youtube", "videoId": "0Y0Z0lZz0g" ,"category": "Horror" },
+  { "title": "Deadpool & Wolverine", "img": "https://www.impawards.com/2024/posters/deadpool_and_wolverine.jpg", "videoType": "youtube", "videoId": "R9W_Kh7KPs8", "category": "Action" },
+  { "title": "A Haunting in Venice", "img": "https://www.impawards.com/2023/posters/haunting_in_venice.jpg", "videoType": "youtube", "videoId": "9DtJxkB4kMc", "category": "Thriller" },
+  { "title": "Saltburn", "img": "https://www.impawards.com/2023/posters/saltburn_ver2.jpg", "videoType": "youtube", "videoId": "jV1a7gYpT9w", "category": "Drama" },
+  { "title": "Poor Things", "img": "https://www.impawards.com/2023/posters/poor_things_ver2.jpg", "videoType": "youtube", "videoId": "R9P3zDQ4T4A", "category": "Romance" }
+    ];
+
+    // Categories list extracted from movies
+    const categoriesSet = new Set(movies.map(m => m.category));
+    const categories = Array.from(categoriesSet).sort();
+    categories.unshift('All'); // Add 'All' category first
+
+    // For filtering and displaying
+    let currentCategory = 'All';
+
+    // Show home page with movie cards
+    function showHomePage() {
+      loginPage.style.display = 'none';
+      homePage.style.display = 'block';
+      // Set user name
+      const currentUser = getCurrentUser();
+      userNameSpan.textContent = currentUser ? `Hello, ${currentUser.name}` : '';
+      renderCategoryButtons();
+      renderMoviesSections();
+      renderContinueWatching();
+      homePage.focus();
+    }
+
+    function showLoginPage() {
+      homePage.style.display = 'none';
+      loginPage.style.display = 'flex';
+      activateTab('signin');
+      signInForm.reset();
+      signUpForm.reset();
+      searchBar.value = '';
+      clearErrors();
+    }
+
+    // Render category buttons in navbar
+    function renderCategoryButtons() {
+      categoryNav.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.dataset.category = cat;
+        btn.className = cat === currentCategory ? 'active' : '';
+        btn.setAttribute('aria-pressed', cat === currentCategory ? 'true' : 'false');
+
+        btn.addEventListener('click', () => {
+          // If already selected, no change
+          if(currentCategory === cat) return;
+          currentCategory = cat;
+          renderCategoryButtons();
+          renderMoviesSections();
+        });
+
+        categoryNav.appendChild(btn);
+      });
+    }
+
+    // Render movies sections based on category selection and search
+    function renderMoviesSections() {
+      moviesSectionsContainer.innerHTML = '';
+      const filterText = searchBar.value.trim().toLowerCase();
+
+      // If 'All' category: show all categories as sections, else one category only
+      let catsToShow;
+      if(currentCategory === 'All') {
+        catsToShow = categories.filter(c => c !== 'All');
+      } else {
+        catsToShow = [currentCategory];
+      }
+
+      catsToShow.forEach(cat => {
+        // Filter movies for category and search
+        let filtered = movies.filter(m => m.category === cat);
+        if(filterText) {
+          filtered = filtered.filter(m => m.title.toLowerCase().includes(filterText));
+        }
+        if(filtered.length === 0) return; // skip empty category
+
+        const section = document.createElement('section');
+        section.setAttribute('aria-label', `${cat} movies`);
+        const heading = document.createElement('h2');
+        heading.textContent = cat + ' Movies';
+        section.appendChild(heading);
+
+        const grid = document.createElement('div');
+        grid.className = 'movies-grid';
+        filtered.forEach(movie => {
+          grid.appendChild(createMovieCard(movie));
+        });
+        section.appendChild(grid);
+        moviesSectionsContainer.appendChild(section);
+      });
+    }
+
+    // Render continue watching section
+    function renderContinueWatching() {
+      const list = getContinueWatching();
+      continueWatchingContainer.innerHTML = '';
+      if(list.length === 0) {
+        const emptyMsg = document.createElement('p');
+        emptyMsg.style.color = '#bbb';
+        emptyMsg.style.fontStyle = 'italic';
+        emptyMsg.textContent = 'No movies to continue watching yet.';
+        continueWatchingContainer.appendChild(emptyMsg);
+        return;
+      }
+      list.forEach(movie => {
+        continueWatchingContainer.appendChild(createMovieCard(movie));
+      });
+    }
+
+    // Create movie card element
+    function createMovieCard(movie) {
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Play trailer for ${movie.title}`);
+      card.dataset.videoId = movie.videoId;
+      card.dataset.videoType = movie.videoType;
+      card.dataset.title = movie.title;
+
+      card.innerHTML = `
+        <img src="${movie.img}" alt="Poster of ${movie.title}" loading="lazy" />
+        <div class="movie-title">${movie.title}</div>
+      `;
+
+      // Click plays trailer and adds to continue watching list
+      card.addEventListener('click', () => {
+        openVideoModal(movie.videoType, movie.videoId, movie.title);
+        addContinueWatching(movie);
+        renderContinueWatching();
+      });
+      // Keyboard accessible play
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openVideoModal(movie.videoType, movie.videoId, movie.title);
+          addContinueWatching(movie);
+          renderContinueWatching();
+        }
+      });
+
+      return card;
+    }
+
+    // Search bar event to re-render movies sections
+    searchBar.addEventListener('input', () => {
+      renderMoviesSections();
+    });
+
+    // Video modal logic
+    function openVideoModal(videoType, videoId, title) {
+      if(!videoType || !videoId) return;
+      videoModal.innerHTML = ''; // Clear content
+
+      let mediaElement;
+      if(videoType === 'youtube') {
+        // Create iframe for YouTube video embed
+        mediaElement = document.createElement('iframe');
+        mediaElement.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+        mediaElement.width = "800";
+        mediaElement.height = "450";
+        mediaElement.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        mediaElement.allowFullscreen = true;
+        mediaElement.title = `${title} - Trailer`;
+        mediaElement.setAttribute('frameborder', '0');
+      } else {
+        mediaElement = document.createElement('video');
+        mediaElement.controls = true;
+        mediaElement.autoplay = true;
+        mediaElement.src = videoId;
+        mediaElement.title = title;
+      }
+
+      videoModal.appendChild(mediaElement);
+      videoModal.appendChild(modalCloseBtn);
+      videoModal.classList.add('active');
+      videoModal.focus();
+
+      function onKeyDown(e) {
+        if(e.key === 'Escape') {
+          closeVideoModal();
+        }
+      }
+
+      videoModal.addEventListener('keydown', onKeyDown);
+      videoModal._keydownHandler = onKeyDown;
+    }
+
+    function closeVideoModal() {
+      videoModal.classList.remove('active');
+      videoModal.innerHTML = '';
+      videoModal.appendChild(modalCloseBtn);
+      modalCloseBtn.blur();
+    }
+
+    // Close button event
+    modalCloseBtn.addEventListener('click', closeVideoModal);
+    modalCloseBtn.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeVideoModal();
+      }
+    });
+
+    // Keyboard escape close modal
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') {
+        if(videoModal.classList.contains('active')) {
+          closeVideoModal();
+        }
+      }
+    });
+
+    // On load check if user is logged in and show page accordingly
+    window.addEventListener('load', () => {
+      const currentUser = getCurrentUser();
+      if(currentUser) {
+        showHomePage();
+      } else {
+        showLoginPage();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
+
