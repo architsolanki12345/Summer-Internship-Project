@@ -33,8 +33,9 @@ CineVibe is a responsive web application that simulates the experience of an OTT
 
 ## 📸 Screenshots
 
-![Screenshot 2025-06-16 171633](https://github.com/user-attachments/assets/00133796-ef2f-434a-8234-3363faa0b9ec)
 ![Screenshot 2025-06-16 171604](https://github.com/user-attachments/assets/90a9d767-be48-45c9-b266-c565fbdbc2a1)
+![Screenshot 2025-06-16 171633](https://github.com/user-attachments/assets/00133796-ef2f-434a-8234-3363faa0b9ec)
+![Screenshot 2025-06-16 172009](https://github.com/user-attachments/assets/119f0625-e5dd-40d4-834f-f53bff8e1ec8)
 
 
 
